@@ -1,0 +1,22 @@
+# APM: dependencias instaladas
+apm_modules/
+
+# Salida compilada de APM: en este repo solo vive la FUENTE (.apm/). Los repos consumidores sí la comitean.
+/AGENTS.md
+/CLAUDE.md
+/GEMINI.md
+/.claude/
+/.codex/
+/.opencode/
+/.agents/
+/.cursor/
+/.github/instructions/
+/.github/agents/
+/.github/prompts/
+/.github/copilot-instructions.md
+
+# Bundles de apm pack (los publica la release, F4.2)
+/build/
+/dist/
+
+.DS_Store

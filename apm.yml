@@ -1,0 +1,26 @@
+# Harness corporativo del agentic-platform-lab (ADR 0022-0025).
+# Esta versión ES la del harness: el tag harness-vX.Y.Z debe coincidir con ella (lo comprueba la release, F4.2).
+name: platform-harness
+version: 0.1.0
+description: >-
+  Harness corporativo del agentic-platform-lab: estándares, mandatos de agente, skills, MCP y
+  políticas en formatos abiertos. Un harness, dos motores (UHP abierto y Claude Code).
+author: elpalmeral-org
+license: Apache-2.0
+homepage: https://github.com/elpalmeral-org/agentic-platform-lab/blob/main/docs/lab/harness.md
+repository: https://github.com/elpalmeral-org/platform-harness
+keywords: [harness-engineering, aidlc, sdd, openspec, uhp]
+type: hybrid
+
+# Herramientas a las que se compila (ADR 0023). Hooks: no llegan a OpenCode (ver matriz de APM).
+targets:
+  - claude
+  - copilot
+  - codex
+  - opencode
+
+includes: auto
+
+dependencies:
+  apm: []
+  mcp: []      # MCP de Port: F4.1d
