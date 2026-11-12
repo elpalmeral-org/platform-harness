@@ -11,7 +11,7 @@ requieren un *waiver* en `policy/waivers/` del repo, con dueño y fecha de caduc
 
 ## §2 Lenguajes y frameworks
 
-- Backend: Python 3.13 + FastAPI, dependencias con `uv` (lockfile comiteado).
+- Backend: Python 3.14 + FastAPI, dependencias con `uv` (lockfile comiteado).
 - Frontend: Angular 22 + TypeScript estricto.
 - Cualquier otro stack entra por la plataforma (una plantilla nueva), no de forma ad hoc.
 
