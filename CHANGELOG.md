@@ -10,3 +10,10 @@ publicada es un tag `harness-vX.Y.Z`.
 - Skill `corporate-grounding` con el corpus corporativo citable (`references/`): estándares de ingeniería v4.0, base de seguridad v3.0 y
   clasificación de datos v2.0, con la matriz de qué datos recibe cada modelo (C3 solo al modelo local).
 - Instrucciones siempre activas (`.apm/instructions/`): resumen operativo de los tres documentos.
+- Mandatos de agente (`.apm/agents/`): `spec-writer`, `implementer` y tres validadores de solo lectura
+  (`spec-validator`, `security-gate`, `impl-conformance`) con veredicto estricto.
+- Comando `/feature` (`.apm/prompts/feature.prompt.md`): fase A hasta el PR de la spec (puerta 1) y
+  fase B hasta el PR de código con la evidencia de los validadores (puerta 2). Acepta un *issue*.
+
+### Corregido
+- Estándares §2: el backend es Python 3.14.

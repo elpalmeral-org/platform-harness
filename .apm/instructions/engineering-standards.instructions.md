@@ -9,7 +9,7 @@ Versión completa y citable: skill `corporate-grounding` (`[[corpus/01-engineeri
 
 - **Sin spec no hay código** (§3): toda feature parte de un cambio OpenSpec aprobado que cita el corpus
   (`[[corpus/<doc>.md]] §N`) con la consecuencia concreta.
-- **Stack** (§2): backend Python 3.13 + FastAPI con `uv`; frontend Angular 22 + TypeScript estricto.
+- **Stack** (§2): backend Python 3.14 + FastAPI con `uv`; frontend Angular 22 + TypeScript estricto.
 - **Fronteras** (§4, BLOCKER): los *routers* no tienen lógica de negocio; los servicios de dominio no
   hacen I/O; los componentes de Angular no llaman a la API directamente.
 - **API** (§5): OpenAPI; un cambio incompatible exige versión mayor y nota de migración.
