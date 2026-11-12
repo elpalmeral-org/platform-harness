@@ -7,3 +7,6 @@ publicada es un tag `harness-vX.Y.Z`.
 
 ### Añadido
 - Esqueleto del paquete APM (`apm.yml`, `.apm/`) con destino Claude Code, Copilot, Codex y OpenCode.
+- Skill `corporate-grounding` con el corpus corporativo citable (`references/`): estándares de ingeniería v4.0, base de seguridad v3.0 y
+  clasificación de datos v2.0, con la matriz de qué datos recibe cada modelo (C3 solo al modelo local).
+- Instrucciones siempre activas (`.apm/instructions/`): resumen operativo de los tres documentos.
