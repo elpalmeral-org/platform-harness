@@ -31,7 +31,7 @@ Decisiones: ADR [0022](https://github.com/elpalmeral-org/agentic-platform-lab/bl
 | `.apm/prompts/` | Comandos (`/feature`) | `*.prompt.md` | v0.1.0 |
 | `.apm/skills/` | Capacidades bajo demanda | Agent Skills (`SKILL.md`) | v0.1.0 |
 | `.apm/hooks/` | Guardarraíles dentro del agente (donde la herramienta los soporte) | JSON | v0.1.0 |
-| `corpus/` | Documentación corporativa para *grounding* | Markdown | v0.1.0 |
+| `.apm/skills/corporate-grounding/references/` | Corpus corporativo citable (`[[corpus/…]] §N`); viaja con la skill de *grounding* | Markdown | v0.1.0 |
 | `policy/` | Política de merge (OPA) y política de APM | Rego · YAML | v0.1.0 |
 | `uhp/roles.yaml` | Motor A: rol → base + modelo + proveedor | YAML | v0.1.0 |
 
