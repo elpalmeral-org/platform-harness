@@ -75,7 +75,8 @@ jobs:
             --arg digest "$digest" \
             --arg format "claude-plugin" \
             --arg archive "$(basename "$archive")" \
-            '{tag: $tag, commit: $commit, digest: $digest, format: $format, archive: $archive}' \
+            --arg signature "$(basename "$archive").sigstore.json" \
+            '{tag: $tag, commit: $commit, digest: $digest, format: $format, archive: $archive, signature: $signature}' \
             > build/manifest.json
           cat build/manifest.json
 
@@ -84,10 +85,7 @@ jobs:
       - name: Firma keyless (identidad OIDC de este workflow, no una personal)
         run: |
           archive="${{ steps.pack.outputs.archive }}"
-          cosign sign-blob --yes \
-            --output-signature "$archive.sig" \
-            --output-certificate "$archive.pem" \
-            "$archive"
+          cosign sign-blob --yes --bundle "$archive.sigstore.json" "$archive"
 
       - name: GitHub Release
         env:
@@ -98,8 +96,9 @@ jobs:
             --title "$GITHUB_REF_NAME" \
             --notes "Release firmada del harness corporativo. Verifica con:
           \`\`\`
-          cosign verify-blob --certificate-identity-regexp 'https://github.com/elpalmeral-org/platform-harness/.github/workflows/release.yml@.*' \\
+          cosign verify-blob --bundle ${archive}.sigstore.json \\
+            --certificate-identity-regexp 'https://github.com/elpalmeral-org/platform-harness/.github/workflows/release.yml@.*' \\
             --certificate-oidc-issuer https://token.actions.githubusercontent.com \\
-            --signature ${archive}.sig --certificate ${archive}.pem ${archive}
+            ${archive}
           \`\`\`" \
-            "$archive" "$archive.sig" "$archive.pem" build/manifest.json
+            "$archive" "$archive.sigstore.json" build/manifest.json

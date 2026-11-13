@@ -44,9 +44,10 @@ Primera release firmada del harness ([ADR 0027](https://github.com/elpalmeral-or
 
 - Release firmada (ADR 0027): `.github/workflows/release.yml` se dispara al crear el tag
   `harness-vX.Y.Z` (ruleset `tags-harness`, solo admin). Empaqueta con `apm pack` (formato
-  `claude-plugin`, zip), firma el bundle con `cosign sign-blob --keyless` usando la identidad OIDC
-  del propio *workflow* (no una identidad personal) y publica una GitHub Release con el `.zip`, la
-  firma, el certificado y un `manifest.json` (`tag`, `commit`, `digest`, `format`).
+  `claude-plugin`, zip), firma el bundle con `cosign sign-blob --yes --bundle` (formato moderno:
+  firma + certificado + prueba de Rekor en un solo `.sigstore.json`) usando la identidad OIDC del
+  propio *workflow* (no una identidad personal) y publica una GitHub Release con el `.zip`, el
+  `.sigstore.json` y un `manifest.json` (`tag`, `commit`, `digest`, `format`, `archive`, `signature`).
 
 ### Corregido
 - Estándares §2: el backend es Python 3.14.
