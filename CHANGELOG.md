@@ -18,5 +18,10 @@ publicada es un tag `harness-vX.Y.Z`.
 - Servidor MCP `port` (catálogo de Port, región EU) en **solo lectura**, instalado en las cuatro
   herramientas; la skill `corporate-grounding` consulta con él el contexto del servicio.
 
+- Hook `block-secrets` (`PreToolUse`): bloquea cualquier llamada a una herramienta (escritura,
+  edición o comando) cuyo contenido tenga forma de credencial. Sin dependencias (Python estándar),
+  falla en abierto y nunca repite el valor. Llega a Claude Code, Codex y Copilot; OpenCode no tiene
+  hooks. Tests en `tests/`.
+
 ### Corregido
 - Estándares §2: el backend es Python 3.14.
