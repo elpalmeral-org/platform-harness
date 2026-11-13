@@ -28,5 +28,10 @@ publicada es un tag `harness-vX.Y.Z`.
   solo con spec ya fusionada (salvo releases y excepción visible `no-spec-required`), OpenSpec
   válido y, en PR de agentes (`aidlc`), evidencia de los tres validadores en `PASS`.
 
+- `uhp/roles.yaml`: para los 5 roles del motor A (HarnessRouter / UHP), base `opencode` y modelo
+  único `deepseek/deepseek-v3.2` en OpenRouter; de momento ningún rol en el modelo local (Bonsai).
+  Política `policy/opa/uhp_roles.rego` (con 5 tests): ningún rol usa provider, base o modelo de
+  Anthropic (ADR 0025).
+
 ### Corregido
 - Estándares §2: el backend es Python 3.14.

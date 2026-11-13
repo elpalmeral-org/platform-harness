@@ -1,0 +1,54 @@
+# Harness corporativo del agentic-platform-lab · motor A (UHP / HarnessRouter), ADR 0024-0025.
+#
+# Para cada rol de `.apm/agents/<rol>.agent.md`, declara con qué base de HarnessRouter y qué
+# modelo corre en el motor A. `harness-sync` (F4.7, aún no implementado) lee este fichero junto
+# con el mandato (systemPrompt) y la versión del release para publicar `meridian/<rol>@X.Y.Z` en
+# HarnessRouter (`PUT /v1/harnesses`). Nunca se edita un harness publicado: la versión siguiente
+# lleva su propio `meridian/<rol>@X.Y.Z+1`.
+#
+# Decisiones (13-nov-2026):
+# - Un único modelo para los 5 roles: más fácil de documentar y de mantener dentro del límite de
+#   10 $ de la clave `harnessrouter-k3s01` (caduca 11-may-2027, sin recarga automática).
+# - De momento, ningún rol va a Bonsai (modelo local): hasta medir en F4.7 si el 27B ternario
+#   aguanta un bucle agéntico largo (duda Q8), todo el motor A va por OpenRouter.
+# - ADR 0025: el motor A nunca lleva modelos de Anthropic (Claude llega solo por Claude Code, con
+#   la suscripción, motor B). Lo comprueba `policy/opa/uhp_roles.rego`.
+version: 1
+
+roles:
+  # AIDLC · PROPOSE. Escribe, pero solo bajo openspec/changes/<cambio>/ (lo impone el mandato, no
+  # el harness: HarnessRouter no tiene un disabledTools tan fino como "solo esta carpeta").
+  spec-writer:
+    provider: openrouter
+    base: opencode
+    model: deepseek/deepseek-v3.2
+
+  # AIDLC · IMPLEMENT. Único rol con escritura sin acotar (implementa dentro del alcance del
+  # design.md ya aprobado).
+  implementer:
+    provider: openrouter
+    base: opencode
+    model: deepseek/deepseek-v3.2
+
+  # Validador 1 de 3 · SOLO LECTURA.
+  spec-validator:
+    provider: openrouter
+    base: opencode
+    model: deepseek/deepseek-v3.2
+    # Nombres de herramienta por confirmar contra la base real en F4.6 (HarnessRouter CE): aquí
+    # se documenta la intención (sin escritura, edición ni shell), no una lista ya probada.
+    disabledTools: [write, edit, bash]
+
+  # Validador 2 de 3 · SOLO LECTURA.
+  security-gate:
+    provider: openrouter
+    base: opencode
+    model: deepseek/deepseek-v3.2
+    disabledTools: [write, edit, bash]
+
+  # Validador 3 de 3 · SOLO LECTURA.
+  impl-conformance:
+    provider: openrouter
+    base: opencode
+    model: deepseek/deepseek-v3.2
+    disabledTools: [write, edit, bash]
