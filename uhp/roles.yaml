@@ -1,16 +1,22 @@
-# Harness corporativo del agentic-platform-lab · motor A (UHP / HarnessRouter), ADR 0024-0025.
+# Harness corporativo del agentic-platform-lab · motor A (UHP / HarnessRouter), ADR 0024-0025,
+# ADR 0033 (F4.7, cerrado 13-nov-2026).
 #
 # Para cada rol de `.apm/agents/<rol>.agent.md`, declara con qué base de HarnessRouter y qué
-# modelo corre en el motor A. `harness-sync` (F4.7, aún no implementado) lee este fichero junto
-# con el mandato (systemPrompt) y la versión del release para publicar `meridian/<rol>@X.Y.Z` en
-# HarnessRouter (`PUT /v1/harnesses`). Nunca se edita un harness publicado: la versión siguiente
-# lleva su propio `meridian/<rol>@X.Y.Z+1`.
+# modelo corre en el motor A. `harness-sync.yml` (platform-harness, workflow_dispatch manual) lee
+# este fichero junto con el mandato (systemPrompt) y publica/actualiza `meridian/<rol>` en
+# HarnessRouter (`POST /v1/harnesses` si no existe, `PUT /v1/harnesses/{id}` si ya existe — el
+# `name` no es buscable por el servidor, hay que listar y filtrar por él para encontrar el `id`).
 #
-# Decisiones (13-nov-2026):
+# Decisiones (13-nov-2026, verificadas de verdad contra la API real, no asumidas):
+# - `model: gpt-5.4-mini`, no `deepseek/deepseek-v3.2` como se pensaba antes de F4.7: HarnessRouter
+#   valida `default_model` contra un catálogo cerrado propio por *base* (confirmado con un 422 real
+#   al intentar publicar con el nombre de OpenRouter), no un paso directo de cualquier slug al
+#   proveedor. "gpt-5.4-mini" es de los más baratos del catálogo ofrecido para `opencode`.
 # - Un único modelo para los 5 roles: más fácil de documentar y de mantener dentro del límite de
 #   10 $ de la clave `harnessrouter-k3s01` (caduca 11-may-2027, sin recarga automática).
-# - De momento, ningún rol va a Bonsai (modelo local): hasta medir en F4.7 si el 27B ternario
-#   aguanta un bucle agéntico largo (duda Q8), todo el motor A va por OpenRouter.
+# - Ningún rol real va a Bonsai (modelo local): la prueba de humo de F4.7 confirmó que funciona
+#   (respuesta coherente, ~19 s, sin fallo) pero no mide un bucle agéntico largo (Q8 sigue
+#   abierta); los 5 roles reales van por OpenRouter (`HR_SECRET_GLOBAL_HARNESS_POLICY_OPENCODE`).
 # - ADR 0025: el motor A nunca lleva modelos de Anthropic (Claude llega solo por Claude Code, con
 #   la suscripción, motor B). Lo comprueba `policy/opa/uhp_roles.rego`.
 version: 1
@@ -21,20 +27,20 @@ roles:
   spec-writer:
     provider: openrouter
     base: opencode
-    model: deepseek/deepseek-v3.2
+    model: gpt-5.4-mini
 
   # AIDLC · IMPLEMENT. Único rol con escritura sin acotar (implementa dentro del alcance del
   # design.md ya aprobado).
   implementer:
     provider: openrouter
     base: opencode
-    model: deepseek/deepseek-v3.2
+    model: gpt-5.4-mini
 
   # Validador 1 de 3 · SOLO LECTURA.
   spec-validator:
     provider: openrouter
     base: opencode
-    model: deepseek/deepseek-v3.2
+    model: gpt-5.4-mini
     # Nombres de herramienta por confirmar contra la base real en F4.6 (HarnessRouter CE): aquí
     # se documenta la intención (sin escritura, edición ni shell), no una lista ya probada.
     disabledTools: [write, edit, bash]
@@ -43,12 +49,12 @@ roles:
   security-gate:
     provider: openrouter
     base: opencode
-    model: deepseek/deepseek-v3.2
+    model: gpt-5.4-mini
     disabledTools: [write, edit, bash]
 
   # Validador 3 de 3 · SOLO LECTURA.
   impl-conformance:
     provider: openrouter
     base: opencode
-    model: deepseek/deepseek-v3.2
+    model: gpt-5.4-mini
     disabledTools: [write, edit, bash]
