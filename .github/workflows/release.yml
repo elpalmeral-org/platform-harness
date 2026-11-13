@@ -1,0 +1,105 @@
+# Release firmada del harness (F4.2, ADR 0027). Se dispara al crear un tag harness-vX.Y.Z (solo
+# un admin puede crearlo: ruleset tags-harness). Empaqueta con "apm pack" (formato claude-plugin,
+# el único de los tres que conserva agentes, hooks e instrucciones), firma el archivo con cosign
+# *keyless* usando la identidad OIDC de este workflow (no una identidad personal: el certificado
+# de Sigstore queda público en el log de transparencia de Rekor para siempre) y publica una
+# GitHub Release con el bundle, el manifiesto y la firma.
+name: release
+
+on:
+  push:
+    tags:
+      - "harness-v*"
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  release:
+    name: empaquetar, firmar y publicar
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: La versión del tag coincide con apm.yml
+        run: |
+          tag="${GITHUB_REF_NAME#harness-v}"
+          version="$(grep '^version:' apm.yml | sed -E 's/version: *"?([^"]+)"?/\1/')"
+          if [ "$tag" != "$version" ]; then
+            echo "::error::tag harness-v$tag no coincide con la versión de apm.yml ($version)"
+            exit 1
+          fi
+
+      - name: apm-cli 0.35.0 (pip, aislado con pipx)
+        run: pipx install apm-cli==0.35.0
+
+      - name: apm install --dry-run y apm compile --dry-run (última comprobación antes de publicar)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          apm install --dry-run
+          apm compile --dry-run
+
+      - uses: open-policy-agent/setup-opa@34a30e8a924d1b03ce2cf7abe97250bbb1f332b5 # v2.2.0
+        with:
+          version: latest
+      - run: opa test -v policy/opa
+
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+        with:
+          python-version: "3.14"
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+      - run: uv sync --locked --group dev
+      - run: uv run pytest -q tests
+
+      - name: apm pack (bundle claude-plugin en zip)
+        id: pack
+        run: |
+          apm pack --archive --archive-format zip -o build -v
+          archive="$(ls build/*.zip)"
+          echo "archive=$archive" >> "$GITHUB_OUTPUT"
+          echo "archive_name=$(basename "$archive")" >> "$GITHUB_OUTPUT"
+
+      - name: Manifiesto de release (tag, commit, digest)
+        id: manifest
+        run: |
+          archive="${{ steps.pack.outputs.archive }}"
+          digest="sha256:$(sha256sum "$archive" | cut -d' ' -f1)"
+          jq -n \
+            --arg tag "$GITHUB_REF_NAME" \
+            --arg commit "$GITHUB_SHA" \
+            --arg digest "$digest" \
+            --arg format "claude-plugin" \
+            --arg archive "$(basename "$archive")" \
+            '{tag: $tag, commit: $commit, digest: $digest, format: $format, archive: $archive}' \
+            > build/manifest.json
+          cat build/manifest.json
+
+      - uses: sigstore/cosign-installer@756fe2d284c7292c4e9b62c8a28f1e5629c59532 # v4.1.3
+
+      - name: Firma keyless (identidad OIDC de este workflow, no una personal)
+        run: |
+          archive="${{ steps.pack.outputs.archive }}"
+          cosign sign-blob --yes \
+            --output-signature "$archive.sig" \
+            --output-certificate "$archive.pem" \
+            "$archive"
+
+      - name: GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          archive="${{ steps.pack.outputs.archive }}"
+          gh release create "$GITHUB_REF_NAME" \
+            --title "$GITHUB_REF_NAME" \
+            --notes "Release firmada del harness corporativo. Verifica con:
+          \`\`\`
+          cosign verify-blob --certificate-identity-regexp 'https://github.com/elpalmeral-org/platform-harness/.github/workflows/release.yml@.*' \\
+            --certificate-oidc-issuer https://token.actions.githubusercontent.com \\
+            --signature ${archive}.sig --certificate ${archive}.pem ${archive}
+          \`\`\`" \
+            "$archive" "$archive.sig" "$archive.pem" build/manifest.json
