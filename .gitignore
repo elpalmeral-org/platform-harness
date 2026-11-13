@@ -15,6 +15,7 @@ apm_modules/
 /.github/prompts/
 /.github/copilot-instructions.md
 /.github/mcp.json
+/.github/hooks/
 /.mcp.json
 /opencode.json
 /.apm-local/
@@ -23,5 +24,9 @@ apm_modules/
 # Bundles de apm pack (los publica la release, F4.2)
 /build/
 /dist/
+
+# Python
+__pycache__/
+.pytest_cache/
 
 .DS_Store
