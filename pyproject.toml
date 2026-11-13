@@ -1,0 +1,9 @@
+[project]
+name = "platform-harness"
+version = "0.1.0"
+description = "Entorno Python solo para los tests del harness (tests/); el harness en sí no es un paquete Python."
+requires-python = ">=3.14"
+dependencies = []
+
+[dependency-groups]
+dev = ["pytest>=8"]

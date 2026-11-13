@@ -1,0 +1,75 @@
+# CI de platform-harness (F4.1h, ADR 0026): valida el propio harness en cada PR. Un único check
+# agregado, "validate-ok", es el que exige el ruleset de main — mismo patrón que "ci-ok" en
+# meridian-orders.
+name: validate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  apm:
+    name: apm · install y compile en seco
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: apm-cli 0.35.0 (pip, aislado con pipx)
+        run: pipx install apm-cli==0.35.0
+      - name: apm install --dry-run
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: apm install --dry-run
+      - name: apm compile --dry-run
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: apm compile --dry-run
+
+  opa:
+    name: opa · política de merge
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: open-policy-agent/setup-opa@34a30e8a924d1b03ce2cf7abe97250bbb1f332b5 # v2.2.0
+        with:
+          version: latest
+      - run: opa test -v policy/opa
+
+  pytest:
+    name: pytest · scripts del harness
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@07a047e608db84b3d8c06cd9a7c7dcc9c355c18e # v10.3.2
+        with:
+          python-version: "3.14"
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+      - run: uv sync --locked --group dev
+      - run: uv run pytest -q tests
+
+  validate-ok:
+    name: validate-ok
+    if: always()
+    needs: [apm, opa, pytest]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Todo en verde
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+        run: |
+          echo "$NEEDS" | jq -r 'to_entries[] | "\(.key): \(.value.result)"'
+          echo "$NEEDS" | jq -e 'all(.[]; .result == "success" or .result == "skipped")' > /dev/null

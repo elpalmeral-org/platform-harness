@@ -33,5 +33,10 @@ publicada es un tag `harness-vX.Y.Z`.
   Política `policy/opa/uhp_roles.rego` (con 5 tests): ningún rol usa provider, base o modelo de
   Anthropic (ADR 0025).
 
+- CI obligatorio (ADR 0026): `.github/workflows/validate.yml` ejecuta en cada PR `apm install/compile
+  --dry-run` (apm-cli 0.35.0 vía pip, no brew), `opa test -v policy/opa` y `uv run pytest tests`; el
+  check agregado `validate-ok` pasa a ser obligatorio en el ruleset de `main`. `pyproject.toml` +
+  `uv.lock` fijan el entorno de `tests/` (antes no había ninguno: `pytest` solo estaba en Brewfile).
+
 ### Corregido
 - Estándares §2: el backend es Python 3.14.
