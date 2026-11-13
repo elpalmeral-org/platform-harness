@@ -5,6 +5,13 @@ publicada es un tag `harness-vX.Y.Z`.
 
 ## [Sin publicar]
 
+### Añadido
+- `policy/opa/pr_gates.rego`: excepción visible `harness-adopt` para que un repo adopte el harness
+  por primera vez sin que lo abra el bot ([ADR 0028](https://github.com/elpalmeral-org/agentic-platform-lab/blob/main/docs/adr/0028-excepcion-adopcion-inicial-harness.md)).
+  Descubierto al implementar F4.3 en `meridian-orders`: la regla existente solo dejaba pasar
+  `harness_upgrade_pr` (bot + `harness-upgrade`), y una adopción inicial no tiene versión previa que
+  "actualizar". 2 tests nuevos (22/22 en total).
+
 ## [0.1.0] - 2026-11-13
 
 Primera release firmada del harness ([ADR 0027](https://github.com/elpalmeral-org/agentic-platform-lab/blob/main/docs/adr/0027-release-firmada-platform-harness.md)): tag `harness-v0.1.0`.

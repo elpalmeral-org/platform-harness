@@ -58,6 +58,13 @@ harness_upgrade_pr if {
 	"harness-upgrade" in labels
 }
 
+# Adopción inicial del harness en un repo que todavía no lo usaba (F4.3): no hay una versión previa
+# de la que el bot "actualice", así que no puede ser un harness_upgrade_pr. Es una persona quien
+# abre este PR una sola vez por repo; la etiqueta deja la excepción visible, igual que
+# no-spec-required. El PR automático de upgrade (F4.4) decide, cuando se construya, si usa esta
+# misma etiqueta con una persona o una identidad de bot.
+harness_adopt_pr if "harness-adopt" in labels
+
 spec_approved if count(object.get(input.pr, "openspec_changes_in_base", [])) > 0
 
 agent_pr if "aidlc" in labels
@@ -85,9 +92,10 @@ deny contains msg if {
 	msg := sprintf("harness %s por debajo del mínimo %s: fusiona antes el PR de upgrade pendiente", [input.harness.version, minimum_harness_version])
 }
 
-deny contains "el PR cambia ficheros del harness y no es un upgrade de la plataforma (autor elpalmeral-platform-bot[bot] y etiqueta harness-upgrade)" if {
+deny contains "el PR cambia ficheros del harness y no es un upgrade de la plataforma (autor elpalmeral-platform-bot[bot] y etiqueta harness-upgrade) ni una adopción inicial visible (etiqueta harness-adopt)" if {
 	touches_harness
 	not harness_upgrade_pr
+	not harness_adopt_pr
 }
 
 deny contains "el PR cambia código (apps/*/src/) sin un cambio OpenSpec aprobado: usa /feature y fusiona antes el PR de la spec" if {
@@ -115,4 +123,10 @@ warn contains "excepción: el PR cambia código sin spec gracias a la etiqueta n
 	not spec_approved
 	not release_pr
 	"no-spec-required" in labels
+}
+
+warn contains "excepción: adopción inicial del harness (etiqueta harness-adopt); no debería volver a aparecer en este repo" if {
+	touches_harness
+	harness_adopt_pr
+	not harness_upgrade_pr
 }
