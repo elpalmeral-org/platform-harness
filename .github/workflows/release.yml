@@ -92,13 +92,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           archive="${{ steps.pack.outputs.archive }}"
+          name="${{ steps.pack.outputs.archive_name }}"
           gh release create "$GITHUB_REF_NAME" \
             --title "$GITHUB_REF_NAME" \
-            --notes "Release firmada del harness corporativo. Verifica con:
+            --notes "Release firmada del harness corporativo. Tras \`gh release download $GITHUB_REF_NAME\`, verifica con:
           \`\`\`
-          cosign verify-blob --bundle ${archive}.sigstore.json \\
+          cosign verify-blob --bundle ${name}.sigstore.json \\
             --certificate-identity-regexp 'https://github.com/elpalmeral-org/platform-harness/.github/workflows/release.yml@.*' \\
             --certificate-oidc-issuer https://token.actions.githubusercontent.com \\
-            ${archive}
+            ${name}
           \`\`\`" \
             "$archive" "$archive.sigstore.json" build/manifest.json
