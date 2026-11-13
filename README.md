@@ -32,12 +32,16 @@ Decisiones: ADR [0022](https://github.com/elpalmeral-org/agentic-platform-lab/bl
 | `.apm/skills/` | Capacidades bajo demanda | Agent Skills (`SKILL.md`) | v0.1.0 |
 | `.apm/hooks/` | Guardarraíles dentro del agente: `block-secrets`. Llegan a Claude Code, Codex y Copilot; OpenCode no tiene hooks. Son una red extra: lo que bloquea de verdad son las puertas de CI | JSON + Python estándar | v0.1.0 |
 | `.apm/skills/corporate-grounding/references/` | Corpus corporativo citable (`[[corpus/…]] §N`); viaja con la skill de *grounding* | Markdown | v0.1.0 |
-| `policy/` | Política de merge (OPA) y política de APM | Rego · YAML | v0.1.0 |
+| `policy/opa/` | Política de merge de los repos de producto (`pr_gates.rego` + tests): *drift*, firma, versión mínima, spec aprobada, evidencia de los validadores. La evalúa `harness-ok` | Rego | v0.1.0 |
 | `uhp/roles.yaml` | Motor A: rol → base + modelo + proveedor | YAML | v0.1.0 |
 | `tests/` | Tests de los scripts del harness (`python3 -m pytest tests`) | pytest | v0.1.0 |
 
 Solo se versiona la **fuente**. Lo que APM genera (`AGENTS.md`, `.claude/`, `.github/instructions/`…)
 se comitea en los repos que consumen el harness, no aquí.
+
+La política de **instalación** (qué paquetes, MCP y herramientas se permiten en la org) no vive aquí:
+está en [`elpalmeral-org/.github/apm-policy.yml`](https://github.com/elpalmeral-org/.github/blob/main/apm-policy.yml),
+donde APM la descubre sola en cada `apm install`.
 
 ## Cómo se consume (desde F4.3)
 
@@ -64,6 +68,8 @@ en cada PR que no hay *drift*, que la release está firmada y que la versión es
 brew install apm          # CI fija la versión: 0.35.0
 apm install --dry-run     # valida el manifiesto
 apm compile --dry-run     # muestra qué generaría para cada herramienta
+python3 -m pytest -q tests                  # scripts del harness
+opa test -v policy/opa                      # política de merge
 ```
 
 ## Licencia
