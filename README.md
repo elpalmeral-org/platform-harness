@@ -34,7 +34,8 @@ Decisiones: ADR [0022](https://github.com/elpalmeral-org/agentic-platform-lab/bl
 | `.apm/skills/corporate-grounding/references/` | Corpus corporativo citable (`[[corpus/…]] §N`); viaja con la skill de *grounding* | Markdown | v0.1.0 |
 | `policy/opa/` | Política de merge de los repos de producto (`pr_gates.rego` + tests): *drift*, firma, versión mínima, spec aprobada, evidencia de los validadores. La evalúa `harness-ok`. `uhp_roles.rego` + tests: ningún rol del motor A usa provider/base/modelo de Anthropic (ADR 0025) | Rego | v0.1.0 |
 | `uhp/roles.yaml` | Motor A: rol → base + modelo + proveedor | YAML | v0.1.0 |
-| `tests/` | Tests de los scripts del harness (`python3 -m pytest tests`) | pytest | v0.1.0 |
+| `tests/` | Tests de los scripts del harness (`uv run pytest tests`) | pytest | v0.1.0 |
+| `.github/workflows/validate.yml` | CI: `apm install/compile --dry-run`, `opa test`, `pytest`. Check obligatorio `validate-ok` en el ruleset de `main` | GitHub Actions | v0.1.0 |
 
 Solo se versiona la **fuente**. Lo que APM genera (`AGENTS.md`, `.claude/`, `.github/instructions/`…)
 se comitea en los repos que consumen el harness, no aquí.
@@ -68,8 +69,8 @@ en cada PR que no hay *drift*, que la release está firmada y que la versión es
 brew install apm          # CI fija la versión: 0.35.0
 apm install --dry-run     # valida el manifiesto
 apm compile --dry-run     # muestra qué generaría para cada herramienta
-python3 -m pytest -q tests                  # scripts del harness
-opa test -v policy/opa                      # política de merge
+uv sync --group dev && uv run pytest -q tests   # scripts del harness (pytest en .venv, vía uv)
+opa test -v policy/opa                          # política de merge
 ```
 
 ## Licencia
