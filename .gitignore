@@ -21,9 +21,12 @@ apm_modules/
 /.apm-local/
 /apm.lock.yaml
 
-# Bundles de apm pack (los publica la release, F4.2)
+# Bundles de apm pack (los publica la release, F4.2) y los manifiestos de plugin.json que
+# escribe como efecto colateral (son generados, igual que AGENTS.md/.claude/ más arriba)
 /build/
 /dist/
+/.claude-plugin/
+/.github/plugin/
 
 # Python
 __pycache__/

@@ -5,6 +5,10 @@ publicada es un tag `harness-vX.Y.Z`.
 
 ## [Sin publicar]
 
+## [0.1.0] - 2026-11-13
+
+Primera release firmada del harness ([ADR 0027](https://github.com/elpalmeral-org/agentic-platform-lab/blob/main/docs/adr/0027-release-firmada-platform-harness.md)): tag `harness-v0.1.0`.
+
 ### Añadido
 - Esqueleto del paquete APM (`apm.yml`, `.apm/`) con destino Claude Code, Copilot, Codex y OpenCode.
 - Skill `corporate-grounding` con el corpus corporativo citable (`references/`): estándares de ingeniería v4.0, base de seguridad v3.0 y
@@ -37,6 +41,12 @@ publicada es un tag `harness-vX.Y.Z`.
   --dry-run` (apm-cli 0.35.0 vía pip, no brew), `opa test -v policy/opa` y `uv run pytest tests`; el
   check agregado `validate-ok` pasa a ser obligatorio en el ruleset de `main`. `pyproject.toml` +
   `uv.lock` fijan el entorno de `tests/` (antes no había ninguno: `pytest` solo estaba en Brewfile).
+
+- Release firmada (ADR 0027): `.github/workflows/release.yml` se dispara al crear el tag
+  `harness-vX.Y.Z` (ruleset `tags-harness`, solo admin). Empaqueta con `apm pack` (formato
+  `claude-plugin`, zip), firma el bundle con `cosign sign-blob --keyless` usando la identidad OIDC
+  del propio *workflow* (no una identidad personal) y publica una GitHub Release con el `.zip`, la
+  firma, el certificado y un `manifest.json` (`tag`, `commit`, `digest`, `format`).
 
 ### Corregido
 - Estándares §2: el backend es Python 3.14.

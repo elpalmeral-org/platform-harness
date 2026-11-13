@@ -36,6 +36,7 @@ Decisiones: ADR [0022](https://github.com/elpalmeral-org/agentic-platform-lab/bl
 | `uhp/roles.yaml` | Motor A: rol → base + modelo + proveedor | YAML | v0.1.0 |
 | `tests/` | Tests de los scripts del harness (`uv run pytest tests`) | pytest | v0.1.0 |
 | `.github/workflows/validate.yml` | CI: `apm install/compile --dry-run`, `opa test`, `pytest`. Check obligatorio `validate-ok` en el ruleset de `main` | GitHub Actions | v0.1.0 |
+| `.github/workflows/release.yml` | Release firmada al crear el tag `harness-vX.Y.Z` (ADR 0027): `apm pack` + cosign *keyless* + GitHub Release | GitHub Actions | v0.1.0 |
 
 Solo se versiona la **fuente**. Lo que APM genera (`AGENTS.md`, `.claude/`, `.github/instructions/`…)
 se comitea en los repos que consumen el harness, no aquí.
