@@ -32,7 +32,7 @@ Decisiones: ADR [0022](https://github.com/elpalmeral-org/agentic-platform-lab/bl
 | `.apm/skills/` | Capacidades bajo demanda | Agent Skills (`SKILL.md`) | v0.1.0 |
 | `.apm/hooks/` | Guardarraíles dentro del agente: `block-secrets`. Llegan a Claude Code, Codex y Copilot; OpenCode no tiene hooks. Son una red extra: lo que bloquea de verdad son las puertas de CI | JSON + Python estándar | v0.1.0 |
 | `.apm/skills/corporate-grounding/references/` | Corpus corporativo citable (`[[corpus/…]] §N`); viaja con la skill de *grounding* | Markdown | v0.1.0 |
-| `policy/opa/` | Política de merge de los repos de producto (`pr_gates.rego` + tests): *drift*, firma, versión mínima, spec aprobada, evidencia de los validadores. La evalúa `harness-ok` | Rego | v0.1.0 |
+| `policy/opa/` | Política de merge de los repos de producto (`pr_gates.rego` + tests): *drift*, firma, versión mínima, spec aprobada, evidencia de los validadores. La evalúa `harness-ok`. `uhp_roles.rego` + tests: ningún rol del motor A usa provider/base/modelo de Anthropic (ADR 0025) | Rego | v0.1.0 |
 | `uhp/roles.yaml` | Motor A: rol → base + modelo + proveedor | YAML | v0.1.0 |
 | `tests/` | Tests de los scripts del harness (`python3 -m pytest tests`) | pytest | v0.1.0 |
 
