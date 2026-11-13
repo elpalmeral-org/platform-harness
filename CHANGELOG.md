@@ -23,7 +23,7 @@ publicada es un tag `harness-vX.Y.Z`.
   falla en abierto y nunca repite el valor. Llega a Claude Code, Codex y Copilot; OpenCode no tiene
   hooks. Tests en `tests/`.
 
-- Política de merge `policy/opa/pr_gates.rego` (con 14 tests): sin *drift*, release firmada,
+- Política de merge `policy/opa/pr_gates.rego` (con 15 tests): el repo usa el harness, sin *drift*, release firmada,
   versión mínima del harness (`0.1.0`), ficheros del harness solo por PR de upgrade del bot, código
   solo con spec ya fusionada (salvo releases y excepción visible `no-spec-required`), OpenSpec
   válido y, en PR de agentes (`aidlc`), evidencia de los tres validadores en `PASS`.
