@@ -23,4 +23,14 @@ includes: auto
 
 dependencies:
   apm: []
-  mcp: []      # MCP de Port: F4.1d
+  mcp:
+    # Catálogo de Port (región EU), SOLO LECTURA: x-read-only-mode oculta todas las herramientas de
+    # escritura, incluidas las que ejecutan acciones y workflows (los agentes proponen, no actúan).
+    # Autenticación: OAuth de cada persona en su herramienta (motor B). El motor A usa credenciales
+    # de máquina que configura harness-sync en HarnessRouter (F4.7), no esta entrada.
+    - name: port
+      registry: false
+      transport: http
+      url: https://mcp.port.io/v1
+      headers:
+        x-read-only-mode: "1"

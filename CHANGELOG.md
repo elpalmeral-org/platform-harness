@@ -15,5 +15,8 @@ publicada es un tag `harness-vX.Y.Z`.
 - Comando `/feature` (`.apm/prompts/feature.prompt.md`): fase A hasta el PR de la spec (puerta 1) y
   fase B hasta el PR de código con la evidencia de los validadores (puerta 2). Acepta un *issue*.
 
+- Servidor MCP `port` (catálogo de Port, región EU) en **solo lectura**, instalado en las cuatro
+  herramientas; la skill `corporate-grounding` consulta con él el contexto del servicio.
+
 ### Corregido
 - Estándares §2: el backend es Python 3.14.
