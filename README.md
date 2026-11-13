@@ -30,10 +30,11 @@ Decisiones: ADR [0022](https://github.com/elpalmeral-org/agentic-platform-lab/bl
 | `.apm/agents/` | Mandatos de agente (spec-writer, implementer, validadores) | `*.agent.md` | v0.1.0 |
 | `.apm/prompts/` | Comandos (`/feature`) | `*.prompt.md` | v0.1.0 |
 | `.apm/skills/` | Capacidades bajo demanda | Agent Skills (`SKILL.md`) | v0.1.0 |
-| `.apm/hooks/` | Guardarraíles dentro del agente (donde la herramienta los soporte) | JSON | v0.1.0 |
+| `.apm/hooks/` | Guardarraíles dentro del agente: `block-secrets`. Llegan a Claude Code, Codex y Copilot; OpenCode no tiene hooks. Son una red extra: lo que bloquea de verdad son las puertas de CI | JSON + Python estándar | v0.1.0 |
 | `.apm/skills/corporate-grounding/references/` | Corpus corporativo citable (`[[corpus/…]] §N`); viaja con la skill de *grounding* | Markdown | v0.1.0 |
 | `policy/` | Política de merge (OPA) y política de APM | Rego · YAML | v0.1.0 |
 | `uhp/roles.yaml` | Motor A: rol → base + modelo + proveedor | YAML | v0.1.0 |
+| `tests/` | Tests de los scripts del harness (`python3 -m pytest tests`) | pytest | v0.1.0 |
 
 Solo se versiona la **fuente**. Lo que APM genera (`AGENTS.md`, `.claude/`, `.github/instructions/`…)
 se comitea en los repos que consumen el harness, no aquí.
