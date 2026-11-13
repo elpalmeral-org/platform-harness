@@ -5,6 +5,8 @@ publicada es un tag `harness-vX.Y.Z`.
 
 ## [Sin publicar]
 
+## [0.1.1] - 2026-11-13
+
 ### Añadido
 - `policy/opa/pr_gates.rego`: excepción visible `harness-adopt` para que un repo adopte el harness
   por primera vez sin que lo abra el bot ([ADR 0028](https://github.com/elpalmeral-org/agentic-platform-lab/blob/main/docs/adr/0028-excepcion-adopcion-inicial-harness.md)).

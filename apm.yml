@@ -1,7 +1,7 @@
 # Harness corporativo del agentic-platform-lab (ADR 0022-0025).
 # Esta versión ES la del harness: el tag harness-vX.Y.Z debe coincidir con ella (lo comprueba la release, F4.2).
 name: platform-harness
-version: 0.1.0
+version: 0.1.1
 description: >-
   Harness corporativo del agentic-platform-lab: estándares, mandatos de agente, skills, MCP y
   políticas en formatos abiertos. Un harness, dos motores (UHP abierto y Claude Code).
