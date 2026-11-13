@@ -14,6 +14,11 @@ apm_modules/
 /.github/agents/
 /.github/prompts/
 /.github/copilot-instructions.md
+/.github/mcp.json
+/.mcp.json
+/opencode.json
+/.apm-local/
+/apm.lock.yaml
 
 # Bundles de apm pack (los publica la release, F4.2)
 /build/
