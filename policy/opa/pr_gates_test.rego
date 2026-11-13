@@ -95,6 +95,29 @@ test_etiqueta_harness_upgrade_de_una_persona_no_basta if {
 	not pr_gates.allow with input as inp
 }
 
+test_adopcion_inicial_de_una_persona_pasa_con_la_etiqueta if {
+	inp := json.patch(feature_pr, [
+		{"op": "replace", "path": "/pr/title", "value": "feat: consumir el harness corporativo"},
+		{"op": "replace", "path": "/pr/labels", "value": ["harness-adopt"]},
+		{"op": "replace", "path": "/pr/changed_files", "value": ["apm.yml", "apm.lock.yaml", "AGENTS.md", ".claude/settings.json"]},
+		{"op": "replace", "path": "/pr/openspec_changes_in_base", "value": []},
+		{"op": "replace", "path": "/pr/body", "value": ""},
+	])
+	pr_gates.allow with input as inp
+	"excepción: adopción inicial del harness (etiqueta harness-adopt); no debería volver a aparecer en este repo" in pr_gates.warn with input as inp
+}
+
+test_adopcion_sin_etiqueta_bloquea if {
+	inp := json.patch(feature_pr, [
+		{"op": "replace", "path": "/pr/title", "value": "feat: consumir el harness corporativo"},
+		{"op": "replace", "path": "/pr/labels", "value": []},
+		{"op": "replace", "path": "/pr/changed_files", "value": ["apm.yml", "apm.lock.yaml", "AGENTS.md", ".claude/settings.json"]},
+		{"op": "replace", "path": "/pr/openspec_changes_in_base", "value": []},
+		{"op": "replace", "path": "/pr/body", "value": ""},
+	])
+	not pr_gates.allow with input as inp
+}
+
 test_release_please_pasa_sin_spec if {
 	inp := json.patch(feature_pr, [
 		{"op": "replace", "path": "/pr/author", "value": "elpalmeral-platform-bot[bot]"},
