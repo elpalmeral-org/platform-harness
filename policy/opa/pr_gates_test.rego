@@ -42,6 +42,13 @@ test_harness_antiguo_bloquea if {
 	contains(m, "por debajo del mínimo")
 }
 
+test_repo_sin_harness_bloquea if {
+	inp := json.patch(feature_pr, [{"op": "remove", "path": "/harness/version"}])
+	not pr_gates.allow with input as inp
+	some m in pr_gates.deny with input as inp
+	contains(m, "no usa el harness")
+}
+
 test_codigo_sin_spec_aprobada_bloquea if {
 	not pr_gates.allow with input as json.patch(feature_pr, [{"op": "replace", "path": "/pr/openspec_changes_in_base", "value": []}])
 }

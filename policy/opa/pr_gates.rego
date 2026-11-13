@@ -76,6 +76,10 @@ deny contains "la release del harness fijada en apm.lock.yaml no tiene una firma
 	input.checks["harness-signature"] != "success"
 }
 
+deny contains "el repo no usa el harness corporativo: falta elpalmeral-org/platform-harness en apm.yml/apm.lock.yaml" if {
+	not input.harness.version
+}
+
 deny contains msg if {
 	semver.compare(input.harness.version, minimum_harness_version) < 0
 	msg := sprintf("harness %s por debajo del mínimo %s: fusiona antes el PR de upgrade pendiente", [input.harness.version, minimum_harness_version])
