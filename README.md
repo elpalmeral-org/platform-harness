@@ -51,11 +51,21 @@ donde APM la descubre sola en cada `apm install`.
 # apm.yml del repo consumidor
 dependencies:
   apm:
-    - elpalmeral-org/platform-harness#harness-v0.1.0
+    - elpalmeral-org/platform-harness#5df5c1e1830094d033f12224fef72d20717229ab # harness-v0.1.1
 ```
 
-`apm install` genera los ficheros de cada herramienta y `apm.lock.yaml`. El check `harness-ok` comprueba
-en cada PR que no hay *drift*, que la release está firmada y que la versión es al menos la mínima.
+El pin es el **SHA del commit**, no el tag: `apm-policy.yml` (`require_pinned_constraint`) solo
+reconoce como *pinned* un SHA de 40 caracteres o un tag literal `vX.Y.Z` — `harness-vX.Y.Z` no
+encaja en ese patrón y se trataría como una rama que sigue moviéndose. Busca el SHA del último tag
+con `git rev-parse harness-vX.Y.Z^{commit}` en este repo.
+
+`apm install` genera los ficheros de cada herramienta y `apm.lock.yaml` (que sí guarda la versión,
+`0.1.1`, leída del `apm.yml` de ese commit). El check `harness-ok` comprueba en cada PR que no hay
+*drift* (`apm audit --ci`), que la release fijada tiene una firma válida (`cosign verify-blob`
+contra la release de GitHub) y que la versión es al menos la mínima. La primera vez que un repo
+adopta el harness, el PR lleva la etiqueta `harness-adopt`
+([ADR 0028](https://github.com/elpalmeral-org/agentic-platform-lab/blob/main/docs/adr/0028-excepcion-adopcion-inicial-harness.md));
+las siguientes veces, la etiqueta es `harness-upgrade` (F4.4).
 
 ## Versiones
 
